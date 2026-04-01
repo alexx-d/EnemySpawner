@@ -10,7 +10,7 @@ public class ColorChanger : MonoBehaviour
         _renderer = GetComponent<Renderer>();
     }
 
-    public void SetRandomColor()
+    public void ApplyRandomColor()
     {
         _renderer.material.color = Random.ColorHSV();
     }

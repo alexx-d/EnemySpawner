@@ -10,24 +10,33 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _dieYLevel = -10f;
 
     private ColorChanger _colorChanger;
-    private Rigidbody _rb;
+    private Rigidbody _rigidbody;
     private Vector3 _direction;
+    private float _speedSqr;
 
     public event Action<Enemy> Died;
 
     private void Awake()
     {
         _colorChanger = GetComponent<ColorChanger>();
-        _rb = GetComponent<Rigidbody>();
+        _rigidbody = GetComponent<Rigidbody>();
+
+        _speedSqr = _speed * _speed;
     }
 
     private void FixedUpdate()
     {
-        if (_direction == Vector3.zero) return;
+        if (_direction == Vector3.zero)
+        {
+            return;
+        }
 
-        float currentVerticalVelocity = _rb.velocity.y;
-        Vector3 horizontalMove = _direction * _speed;
-        _rb.velocity = new Vector3(horizontalMove.x, currentVerticalVelocity, horizontalMove.z);
+        Vector3 horizontalVelocity = new Vector3(_rigidbody.velocity.x, 0, _rigidbody.velocity.z);
+
+        if (horizontalVelocity.sqrMagnitude < _speedSqr)
+        {
+            _rigidbody.AddForce(_direction * _speed, ForceMode.Acceleration);
+        }
     }
 
     private void Update()
@@ -40,10 +49,10 @@ public class Enemy : MonoBehaviour
 
     public void Init(Vector3 direction)
     {
-        _colorChanger.SetRandomColor();
+        _colorChanger.ApplyRandomColor();
 
-        _rb.velocity = Vector3.zero;
-        _rb.angularVelocity = Vector3.zero;
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
 
         _direction = direction.normalized;
 

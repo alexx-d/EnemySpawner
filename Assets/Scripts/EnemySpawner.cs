@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemySpawner : Spawner<Enemy>
+public class EnemySpawner : ObjectPool<Enemy>
 {
     [SerializeField] private List<SpawnPoint> _spawnPoints;
     [SerializeField] private float _repeatRate = 2f;
 
     private void Start()
     {
-        InvokeRepeating(nameof(GetRandomly), 0.0f, _repeatRate);
+        StartCoroutine(SpawnWithDelay());
     }
 
     public Enemy GetRandomly()
@@ -32,6 +32,17 @@ public class EnemySpawner : Spawner<Enemy>
         }
 
         return enemy;
+    }
+
+    private IEnumerator SpawnWithDelay()
+    {
+        var wait = new WaitForSeconds(_repeatRate);
+
+        while (enabled)
+        {
+            GetRandomly();
+            yield return wait;
+        }
     }
 
     private Vector3 GetRandomDirection()
