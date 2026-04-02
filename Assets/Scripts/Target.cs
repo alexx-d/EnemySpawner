@@ -22,9 +22,4 @@ public class Target : MonoBehaviour
             _currentWaypointIndex = (_currentWaypointIndex + 1) % _waypoints.Length;
         }
     }
-
-    public void SetWaypoints(Transform[] waypoints)
-    {
-        _waypoints = waypoints;
-    }
 }
