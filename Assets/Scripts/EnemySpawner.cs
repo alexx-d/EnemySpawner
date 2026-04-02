@@ -1,40 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemySpawner : MonoBehaviour
+public class EnemySpawner : Spawner<Enemy>
 {
-    [SerializeField] private List<SpawnPoint> _spawnPoints;
-    [SerializeField] private float _spawnDelay = 2f;
+    [SerializeField] private Transform _target;
 
-    private void Start()
+    public void Spawn()
     {
-        StartCoroutine(SpawnWithDelay());
+        Enemy enemy = Get();
+        enemy.transform.position = transform.position;
+        enemy.Init(_target);
+
+        enemy.Died += OnEnemyDied;
     }
 
-    private IEnumerator SpawnWithDelay()
+    private void OnEnemyDied(Enemy enemy)
     {
-        var wait = new WaitForSeconds(_spawnDelay);
-
-        while (enabled)
-        {
-            Spawn();
-            yield return wait;
-        }
+        enemy.Died -= OnEnemyDied;
+        Release(enemy);
     }
 
-    private void Spawn()
+    private void OnDrawGizmos()
     {
-        if (_spawnPoints.Count == 0)
-        {
-            return;
-        }
-        
-        SpawnPoint randomSpawnPoint = _spawnPoints[Random.Range(0, _spawnPoints.Count)];
-
-        Enemy enemy = Instantiate(randomSpawnPoint.Prefab);
-
-        enemy.transform.position = randomSpawnPoint.transform.position;
-        enemy.Init(randomSpawnPoint.Target);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, 0.5f);
     }
 }

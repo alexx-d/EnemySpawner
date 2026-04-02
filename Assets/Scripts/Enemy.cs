@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody), typeof(ColorChanger))]
@@ -8,6 +9,8 @@ public class Enemy : MonoBehaviour
     private ColorChanger _colorChanger;
     private Rigidbody _rigidbody;
     private Transform _target;
+
+    public event Action<Enemy> Died;
 
     private void Awake()
     {
@@ -33,16 +36,13 @@ public class Enemy : MonoBehaviour
 
         if (Vector3.Distance(transform.position, _target.position) < 1f)
         {
-            Destroy(gameObject);
+            Died?.Invoke(this);
         }
     }
 
     public void Init(Transform target)
     {
         _colorChanger.ApplyRandomColor();
-
-        _rigidbody.velocity = Vector3.zero;
-        _rigidbody.angularVelocity = Vector3.zero;
 
         _target = target;
     }
