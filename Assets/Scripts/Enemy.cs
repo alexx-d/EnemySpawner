@@ -1,64 +1,49 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody), typeof(ColorChanger))]
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private float _speed = 5f;
-    [SerializeField] private float _dieYLevel = -10f;
 
     private ColorChanger _colorChanger;
     private Rigidbody _rigidbody;
-    private Vector3 _direction;
-    private float _speedSqr;
-
-    public event Action<Enemy> Died;
+    private Transform _target;
 
     private void Awake()
     {
         _colorChanger = GetComponent<ColorChanger>();
         _rigidbody = GetComponent<Rigidbody>();
-
-        _speedSqr = _speed * _speed;
-    }
-
-    private void FixedUpdate()
-    {
-        if (_direction == Vector3.zero)
-        {
-            return;
-        }
-
-        Vector3 horizontalVelocity = new Vector3(_rigidbody.velocity.x, 0, _rigidbody.velocity.z);
-
-        if (horizontalVelocity.sqrMagnitude < _speedSqr)
-        {
-            _rigidbody.AddForce(_direction * _speed, ForceMode.Acceleration);
-        }
     }
 
     private void Update()
     {
-        if (transform.position.y < _dieYLevel)
+        if (_target == null)
         {
-            Died?.Invoke(this);
+            return;
+        }
+
+        Vector3 direction = (_target.position - transform.position).normalized;
+
+        if (direction != Vector3.zero)
+        {
+            transform.forward = direction;
+        }
+
+        transform.position = Vector3.MoveTowards(transform.position, _target.position, _speed * Time.deltaTime);
+
+        if (Vector3.Distance(transform.position, _target.position) < 1f)
+        {
+            Destroy(gameObject);
         }
     }
 
-    public void Init(Vector3 direction)
+    public void Init(Transform target)
     {
         _colorChanger.ApplyRandomColor();
 
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;
 
-        _direction = direction.normalized;
-
-        if (_direction != Vector3.zero)
-        {
-            transform.forward = _direction;
-        }
+        _target = target;
     }
 }
