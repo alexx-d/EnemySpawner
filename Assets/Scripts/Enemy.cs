@@ -44,6 +44,9 @@ public class Enemy : MonoBehaviour
     {
         _colorChanger.ApplyRandomColor();
 
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
+
         _target = target;
     }
 }
