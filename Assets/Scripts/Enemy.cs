@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
     private ColorChanger _colorChanger;
     private Rigidbody _rigidbody;
     private Transform _target;
+    private readonly float _distanceToTarget = 1f;
 
     public event Action<Enemy> Died;
 
@@ -34,7 +35,7 @@ public class Enemy : MonoBehaviour
 
         transform.position = Vector3.MoveTowards(transform.position, _target.position, _speed * Time.deltaTime);
 
-        if (Vector3.Distance(transform.position, _target.position) < 1f)
+        if (transform.position.IsEnoughClose(_target.position, _distanceToTarget))
         {
             Died?.Invoke(this);
         }

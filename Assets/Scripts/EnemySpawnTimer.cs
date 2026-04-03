@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class SpawnController : MonoBehaviour
+public class EnemySpawnTimer : MonoBehaviour
 {
     [SerializeField] private EnemySpawner[] _spawners;
     [SerializeField] private float _delay = 2f;

@@ -654,7 +654,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5afec9c734b785c4daf5e0f6d1cab82b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawners: []
+  _spawners:
+  - {fileID: 1407206115}
+  - {fileID: 752661140}
+  - {fileID: 2030077673}
+  - {fileID: 761389670}
   _delay: 2
 --- !u!1 &963194225
 GameObject:
